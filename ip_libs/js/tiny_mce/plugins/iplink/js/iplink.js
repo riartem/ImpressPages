@@ -269,7 +269,7 @@ function openIPlinks() {
   var href = document.getElementById('href').value;
     $.ajax({
             type: 'GET',
-            url : parent.window.location,
+            url : parent.window.location.pathname,
             data : {
                 g : 'standard',
                 m : 'content_management',
