@@ -7,7 +7,7 @@ var ipDesign = new function () {
 
 
     /**
-     * 
+     *
      *
      * @private
      * @param src
@@ -268,6 +268,12 @@ var ipDesign = new function () {
         if (restoreDefault) {
             postForm.append($('<input>', {
                 'name': 'restoreDefault',
+                'value': 1,
+                'type': 'hidden'
+            }));
+        } else {
+            postForm.append($('<input>', {
+                'name': 'refreshPreview',
                 'value': 1,
                 'type': 'hidden'
             }));

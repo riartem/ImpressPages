@@ -11,10 +11,10 @@ namespace Modules\developer\form\Field;
 
 class Confirm extends Field{
 
-    protected $checked = null;
+    protected $checked = FALSE;
     protected $text = null;
     protected $postValue = null;
-    
+
     public function __construct($options = array()) {
         if (isset($options['checked'])) {
             $this->checked = $options['checked'];
@@ -56,18 +56,18 @@ class Confirm extends Field{
         if ($this->getText()) {
             $answer .= '<div class="ipmControlConfirmOptions">'.$this->getText().'</div>';
         }
-    
-        return $answer; 
+
+        return $answer;
     }
-    
+
     public function setChecked($checked) {
         $this->checked = $checked;
     }
-    
+
     public function getChecked() {
         return $this->checked;
     }
-    
+
     public function setPostValue($postValue) {
         $this->postValue = $postValue;
     }
@@ -111,7 +111,9 @@ class Confirm extends Field{
     public function setDefaultValue($defaultValue) {
         if ($defaultValue) {
             $this->setChecked(1);
+        } else {
+            $this->setChecked(0);
         }
     }
-    
+
 }

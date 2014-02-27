@@ -235,6 +235,9 @@ class AdminController extends \Ip\Controller
             $lessCompiler = LessCompiler::instance();
             $lessCompiler->rebuild(THEME);
 
+            //update configuration box html
+            $site = \Ip\ServiceLocator::getSite();
+            $site->addJavascriptVariable('ipModuleDesignConfiguration', System::getConfigurationBoxHtml());
         }
 
 

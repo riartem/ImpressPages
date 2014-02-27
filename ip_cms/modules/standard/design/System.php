@@ -78,7 +78,7 @@ class System{
         $site->addJavascriptVariable('ipModuleDesignOptionNames', $fieldNames);
     }
 
-    protected function getConfigurationBoxHtml()
+    public static function getConfigurationBoxHtml()
     {
         $configModel = ConfigModel::instance();
 
