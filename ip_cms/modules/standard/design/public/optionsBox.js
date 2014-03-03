@@ -266,18 +266,21 @@ var ipDesign = new function () {
         }));
 
         if (restoreDefault) {
+            postForm.children().remove();
             postForm.append($('<input>', {
                 'name': 'restoreDefault',
                 'value': 1,
                 'type': 'hidden'
             }));
-        } else {
-            postForm.append($('<input>', {
-                'name': 'refreshPreview',
-                'value': 1,
-                'type': 'hidden'
-            }));
         }
+
+
+        postForm.append($('<input>', {
+            'name': 'refreshPreview',
+            'value': 1,
+            'type': 'hidden'
+        }));
+
 
 
         postForm.appendTo('body').submit();

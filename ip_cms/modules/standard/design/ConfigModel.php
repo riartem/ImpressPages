@@ -44,24 +44,27 @@ class ConfigModel{
         $data = $request->getRequest();
         $config = $this->getLiveConfig();
         if (isset($data['refreshPreview'])) {
-            if (isset($config[$name])) {
 
-                if (isset($data['restoreDefault'])) {
-                    //overwrite current config with default theme values http://live.wsj.com/video/termite-inspired-robots-that-can-build-houses/8D544936-3908-4771-AA59-EC2EE08F3CF1.html$model = Model::instance();
-                    $model = Model::instance();
-                    $theme = $model->getTheme(THEME_DIR, THEME);
-                    $options = $theme->getOptionsAsArray();
-                    foreach($options as $option) {
-                        if (isset($option['name']) && $option['name'] == $name && isset($option['default'])) {
-                            return $option['default'];
-                        }
+            if (isset($data['restoreDefault'])) {
+                //overwrite current config with default theme values $model = Model::instance();
+                $model = Model::instance();
+                $theme = $model->getTheme(THEME_DIR, THEME);
+                $options = $theme->getOptionsAsArray();
+                foreach($options as $option) {
+                    if (isset($option['name']) && $option['name'] == $name && isset($option['default'])) {
+                        return $option['default'];
                     }
                 }
-
-                return $config[$name];
-            } else {
                 return '';
+            } else {
+                if (isset($config[$name])) {
+                    return $config[$name];
+                } else {
+                    return '';
+                }
+
             }
+
 
         }
 
