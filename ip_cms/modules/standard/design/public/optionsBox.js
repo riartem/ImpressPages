@@ -266,7 +266,7 @@ var ipDesign = new function () {
         }));
 
         if (restoreDefault) {
-            postForm.children().remove();
+            postForm.find('[name^=ipDesign]').remove();
             postForm.append($('<input>', {
                 'name': 'restoreDefault',
                 'value': 1,
