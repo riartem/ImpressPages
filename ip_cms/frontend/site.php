@@ -58,7 +58,7 @@ class Site{
 
     /** bool true if page does not exists */
     private $error404;
-    
+
 
     /** @deprecated use getCurrentZone()->getUrl() instead */
     public $zoneUrl;
@@ -80,7 +80,7 @@ class Site{
 
     /** array required javascript files */
     private $requiredJavascript = array();
-    
+
     /** array required css files */
     private $requiredCss = array();
 
@@ -243,10 +243,10 @@ class Site{
             }
 
             setlocale(LC_ALL, $this->currentLanguage['code']);
-        }        
-        
-        
-        
+        }
+
+
+
         $this->configZones();
 
         $this->modulesInit();
@@ -255,7 +255,7 @@ class Site{
             $controller = new \Ip\Controller();
             $curElement->init($controller);
         }
-        
+
         if (!defined('BACKEND')) {
             $this->checkError404();
         }
@@ -266,7 +266,7 @@ class Site{
             ///$this->dispatchError404();
         }
     }
-    
+
     private function error404() {
         global $parametersMod;
         require_once(__DIR__.'/zone404.php');
@@ -283,15 +283,15 @@ class Site{
             'keywords' => '',
             'title' => 'error404'
         );
-        
-        
+
+
         $zone['object'] = new \Frontend\Zone404($zone);
-        
+
         $this->zones['auto_error404'] = $zone;
         $this->currentZone = 'auto_error404';
         $this->error404 = true;
     }
-    
+
     public function dispatchError404() {
         global $dispatcher;
         $event = new \Ip\Event($this, 'site.beforeError404', null);
@@ -311,14 +311,14 @@ class Site{
         foreach ($zones as $key => $zone) {
             $this->zones[$zone['name']] = $zone;
         }
-        
+
         if (!defined('BACKEND') && !defined('SITEMAP')) {
             if (sizeof($zones) == 0) {
                 trigger_error('Please insert at least one zone.');
                 \Db::disconnect();
                 exit;
             }
-            
+
             if ($this->error404) {
                 //current zone set to auto_error404.
                 return;
@@ -340,7 +340,7 @@ class Site{
                     }
                 }
             }
-                
+
             if (!$this->currentZone) {
                 $this->homeZone();
             }
@@ -526,7 +526,7 @@ class Site{
     private function parseUrl(){
         global $parametersMod;
 
-         
+
         //$urlVarsStr = substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['SCRIPT_NAME'], '/') + 1);
         $scriptPath = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/') + 1 );
         if( strpos($_SERVER['REQUEST_URI'] , $scriptPath ) === 0 ) { //script location is the same as url path
@@ -539,10 +539,10 @@ class Site{
         if($question_mark !== false){
             $urlVarsStr = substr($urlVarsStr, 0, $question_mark);
         }
-         
+
         $urlVarsStr = rtrim( $urlVarsStr,  "/");
         $urlVars = explode('/', $urlVarsStr);
-         
+
         for($i=0; $i< sizeof($urlVars); $i++){
             $urlVars[$i] = urldecode($urlVars[$i]);
         }
@@ -667,7 +667,7 @@ class Site{
         if($languageId == null){
             $languageId = $this->currentLanguage['id'];
         }
-         
+
         /*generates link to first page of current language*/
         // get parameter for cms management
         if(isset($this->getVars['cms_action']) && $this->getVars['cms_action'] == 'manage'){
@@ -876,7 +876,7 @@ class Site{
         $currentZone = $this->getZone($this->currentZone);
 
         if ($currentZone) {
-            $currentZone->makeActions(); 
+            $currentZone->makeActions();
         }
 
 
@@ -934,7 +934,7 @@ class Site{
         if (!$curZone) {
             return '';
         }
-        
+
         $curEl =  $curZone->getCurrentElement();
         if($curEl && $curEl->getUrl() != '') {
             return $curEl->getUrl();
@@ -942,11 +942,11 @@ class Site{
             return $curZone->getUrl();
         }
     }
-    
+
     /**
      * This is very specific function that returns zone url string.
      * You should use this only if you are doing something really complicated.
-     * Usually you would like to use $site->getCurrentZone()->getUrl() instead. 
+     * Usually you would like to use $site->getCurrentZone()->getUrl() instead.
      */
     public function getZoneUrl() {
         return $this->zoneUrl;
@@ -962,7 +962,7 @@ class Site{
         if (!$curZone) {
             return '';
         }
-        
+
         $curEl = $curZone->getCurrentElement();
         if($curEl && $curEl->getKeywords() != '') {
             return $curEl->getKeywords();
@@ -1248,7 +1248,11 @@ class Site{
 
             $layout = $this->getLayout();
             if ($layout) {
-                $this->output = \Ip\View::create(BASE_DIR . THEME_DIR . THEME . '/' . $layout, array())->render();
+                if (file_exists(BASE_DIR . THEME_DIR . THEME . '/' . $layout)) {
+                    $this->output = \Ip\View::create(BASE_DIR . THEME_DIR . THEME . '/' . $layout, array())->render();
+                } else {
+                    $this->output = \Ip\View::create(BASE_DIR . THEME_DIR . THEME . '/main.php', array())->render();
+                }
             } else {
                 // DEPRECATED just for backward compatibility
                 $site = \Ip\ServiceLocator::getSite();
@@ -1283,7 +1287,7 @@ class Site{
 
     public function addJavascriptContent($key, $javascript, $stage = 1) {
         $this->requiredJavascript[(int)$stage][$key] = array (
-            'type' => 'content', 
+            'type' => 'content',
             'value' => $javascript
         );
     }
@@ -1297,7 +1301,7 @@ class Site{
     public function addJavascriptVar($name, $value, $stage = 1) {
         $this->addJavascriptVariable($name, $value);
     }
-    
+
     public function addJavascript($file, $stage = 1) {
         $this->requiredJavascript[(int)$stage][$file] = array (
             'type' => 'file',
@@ -1491,7 +1495,7 @@ class Site{
                 $revisionId = $this->getVars['cms_revision'];
                 $revision = \Ip\Revision::getRevision($revisionId);
             }
-             
+
             if ($revision === false || $revision['zoneName'] != $this->getCurrentZone()->getName() || $revision['pageId'] != $this->getCurrentElement()->getId() ) {
                 if (!$this->getCurrentElement()) {
                     return null;
@@ -1508,7 +1512,7 @@ class Site{
             if ($currentElement) {
                 $revision = \Ip\Revision::getPublishedRevision($this->getCurrentZone()->getName(), $currentElement->getId());
             }
-            
+
         }
         return $revision;
     }
@@ -1522,7 +1526,7 @@ class Site{
         }
         return $revision;
     }
-    
+
     private function _duplicateRevision($oldRevisionId){
         $revisionId = \Ip\Revision::duplicateRevision($oldRevisionId);
         $revision = \Ip\Revision::getRevision($revisionId);
@@ -1530,6 +1534,6 @@ class Site{
             throw new \Ip\CoreException("Can't find created revision " . $revisionId, \Ip\CoreException::REVISION);
         }
         return $revision;
-    }    
+    }
 }
 
