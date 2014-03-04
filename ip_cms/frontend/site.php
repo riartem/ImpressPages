@@ -1356,7 +1356,7 @@ class Site{
         $data = $request->getRequest();
 
 
-        if (!empty($data['ipDesign']['pCfg']) && (defined('IP_ALLOW_PUBLIC_THEME_CONFIG') || isset($_REQUEST['ipDesignPreview']))) {
+        if ((!empty($data['ipDesign']['pCfg']) || !empty($data['restoreDefault'])) && (defined('IP_ALLOW_PUBLIC_THEME_CONFIG') || isset($_REQUEST['ipDesignPreview']))) {
             $config = \Modules\standard\design\ConfigModel::instance();
             $inDesignPreview = $config->isInPreviewState();
         }

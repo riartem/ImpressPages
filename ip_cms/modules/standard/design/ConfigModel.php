@@ -42,32 +42,30 @@ class ConfigModel{
     {
         $request = \Ip\ServiceLocator::getRequest();
         $data = $request->getRequest();
-        $config = $this->getLiveConfig();
-        if (isset($data['refreshPreview'])) {
 
-            if (isset($data['restoreDefault'])) {
-                //overwrite current config with default theme values $model = Model::instance();
-                $model = Model::instance();
-                $theme = $model->getTheme(THEME_DIR, THEME);
-                $options = $theme->getOptionsAsArray();
-                foreach($options as $option) {
-                    if (isset($option['name']) && $option['name'] == $name && isset($option['default'])) {
-                        return $option['default'];
-                    }
+        if (isset($data['restoreDefault'])) {
+            //overwrite current config with default theme values $model = Model::instance();
+            $model = Model::instance();
+            $theme = $model->getTheme(THEME_DIR, THEME);
+            $options = $theme->getOptionsAsArray();
+            foreach($options as $option) {
+                if (isset($option['name']) && $option['name'] == $name && isset($option['default'])) {
+                    return $option['default'];
                 }
-                return '';
-            } else {
-                if (isset($config[$name])) {
-                    return $config[$name];
-                } else {
-                    return '';
-                }
-
             }
-
+            return '';
+        } else {
+            $config = $this->getLiveConfig();
+            if (isset($config[$name])) {
+                return $config[$name];
+            }
+            if (isset($data['refreshPreview'])) {
+                return '';
+            }
 
         }
 
+        //take from the database
         $dbh = \Ip\Db::getConnection();
         $sql = '
             SELECT
@@ -108,21 +106,25 @@ class ConfigModel{
     {
         $request = \Ip\ServiceLocator::getRequest();
         $data = $request->getRequest();
-        $config = $this->getLiveConfig();
-        if (!empty($config)) {
-            if (isset($data['restoreDefault'])) {
-                //overwrite current config with default theme values
-                $model = Model::instance();
-                $theme = $model->getTheme(THEME_DIR, THEME);
-                $options = $theme->getOptionsAsArray();
-                foreach($options as $option) {
-                    if (isset($option['name']) && isset($option['default'])) {
-                        $config[$option['name']] = $option['default'];
-                    }
+        if (isset($data['restoreDefault'])) {
+            $config = array();
+            //overwrite current config with default theme values
+            $model = Model::instance();
+            $theme = $model->getTheme(THEME_DIR, THEME);
+            $options = $theme->getOptionsAsArray();
+            foreach($options as $option) {
+                if (isset($option['name']) && isset($option['default'])) {
+                    $config[$option['name']] = $option['default'];
                 }
             }
             return $config;
+        } else {
+            $config = $this->getLiveConfig();
+            if (!empty($config)) {
+                return $config;
+            }
         }
+
 
         $dbh = \Ip\Db::getConnection();
         $sql = '
