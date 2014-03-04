@@ -3,7 +3,8 @@ var ipDesign = new function () {
     "use strict";
     var lastSerialized = null,
         cssUpdateQueue = [], //css files that are in progress to be updated
-        cssUpdateInProgress = false;
+        cssUpdateInProgress = false,
+        saveButtonDown = false;
 
 
     /**
@@ -167,6 +168,14 @@ var ipDesign = new function () {
         $('body').append(ipModuleDesignConfiguration);
         ipModuleForm.init(); //reinit form controls after adding option box
 
+        $('.ipModuleDesignConfig .ipsSave').off('mousedown').on('mousedown', function (e) {
+            saveButtonDown = true;
+        });
+
+        $('.ipModuleDesignConfig .ipsSave').off('mouseup').on('mouseup', function (e) {
+            saveButtonDown = false;
+        });
+
 
         $('.ipModuleDesignConfig .ipsSave').off('click').on('click', function (e) {
             e.preventDefault();
@@ -206,7 +215,9 @@ var ipDesign = new function () {
     };
 
     this.showReloadNotice = function () {
-        $('.ipModuleDesignConfig .ipsReload').removeClass('ipgHide');
+        if (!saveButtonDown) { //if user is holding down the save button, don't show reload message as it will scroll save booton down and save won't happen.
+            $('.ipModuleDesignConfig .ipsReload').removeClass('ipgHide');
+        }
     };
 
     this.reloadLessFiles = function (files) {
