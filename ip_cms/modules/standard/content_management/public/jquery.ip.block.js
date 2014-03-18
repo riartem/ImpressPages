@@ -38,22 +38,22 @@
                         $('.ipAdminWidgetControls').css('visibility', 'visible');
                         $('.ipAdminWidgetControls').css('display', '');
                     },
-                    
+
                     // this event is fired twice by both blocks, when element is moved from one block to another.
                     update : function(event, ui) {
                         if (!$(ui.item).data('ipWidget')) {
                             // some other object is dragged in. Do nothing.
                             return;
                         }
-    
+
                         // item is dragged out of the block. This action will be handled by the reciever using "receive"
                         if ($(ui.item).parent().data('ipBlock').name != $this.data('ipBlock').name) {
                             return;
                         }
-    
+
                         var instanceId = $(ui.item).data('ipWidget').instanceId;
                         var position = $(ui.item).index();
-    
+
                         var data = Object();
                         data.g = 'standard';
                         data.m = 'content_management';
@@ -79,9 +79,9 @@
                             success : methods._moveWidgetResponse,
                             dataType : 'json'
                         });
-    
+
                     },
-    
+
                     receive : function(event, ui) {
                         $element = $(ui.item);
                         // if received element is AdminWidgetButton (insert new widget)
@@ -93,10 +93,10 @@
                             $block = $this;
                             $block.ipBlock('_createWidget', newWidgetName, $position);
                         }
-    
+
                     }
                 });
-                
+
                 $this.data('ipBlock', {
                     name : $this.attr('id').substr(8),
                     revisionId : $this.data('revisionid'),
@@ -124,20 +124,20 @@
                     // as well as any subwidgets it may host
                     // TODO: sending n requests for n widgets may not be the
                     //       most elegant thing to do, however the backend does
-                    //       not know a thing about nesting (to fix this, the 
+                    //       not know a thing about nesting (to fix this, the
                     //       backend must be extended so it can delete more than
-                    //       one widget in a single request). 
+                    //       one widget in a single request).
                     var $instance = $(this),
                         instanceData = $instance.data('ipWidget'),
                         instanceId = instanceData.instanceId,
                         $subwidgets = $instance.find('.ipWidget');
-                    
+
                     $subwidgets.each(function () {
                         $(this).trigger('deleteWidget.ipBlock', {
                             'instanceId': $(this).data('ipWidget').instanceId
                         });
                     });
-                    
+
                     $instance.trigger('deleteWidget.ipBlock', {
                         'instanceId': instanceId
                     });
@@ -290,7 +290,7 @@
     }
 
     };
-    
+
 
 
     $.fn.ipBlock = function(method) {

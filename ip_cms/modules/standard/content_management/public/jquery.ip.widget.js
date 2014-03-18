@@ -22,9 +22,9 @@
             if (!data) {
                 // initialize data array
                 var data = Object();
-                
+
                 $this.prepend(options.widgetControlls);
-                
+
                 //parse widget record data
                 var instanceDataInput = $this.find('.ipAdminWidgetData');
                 if (instanceDataInput){
@@ -32,7 +32,7 @@
                     if (!data) {
                         data = Object();
                     }
-                    
+
                     if (!data.data) {
                         data.data = new Array(); //widgets don't need to worry if data variable is null or not. It is always an array
                     }
@@ -40,13 +40,13 @@
                     data = new Array();
                     data.data = new Array();  //widgets don't need to worry if data variable is null or not. It is always an array
                 }
-                
+
                 if ($this.hasClass('ipAdminWidget')) {
                     data.state = IP_WIDGET_STATE_MANAGEMENT;
                 } else {
                     data.state = IP_WIDGET_STATE_PREVIEW;
                 }
-                
+
                 $this.data('ipWidget', data);
 
                 if (data.state == IP_WIDGET_STATE_MANAGEMENT) {
@@ -61,8 +61,8 @@
                         widgetPluginObject.manageInit();
                     }
                 }
-                
-                
+
+
                 // mange action
                 $this.delegate('.ipWidget .ipActionWidgetManage', 'click', function(event) {
                 	if ( $(event.target).closest('.ipWidget')[0] != $this[0])
@@ -107,7 +107,7 @@
                 		return; // not for me
                     $(this).ipWidget('_saveData', widgetData);
                 });
-                
+
                 $this.bind('saveProgress.ipWidget', function(event, progress, timeLeft) {
                     if ( $(event.target).closest('.ipWidget')[0] != $this[0])
                 		return; // not for me
@@ -139,18 +139,18 @@
 
     manage : function() {
         return this.each(function() {
-            
-            
+
+
             var $this = $(this);
-            
+
             if ($this.data('ipWidget').state != IP_WIDGET_STATE_PREVIEW) {
                 return;
-            }   
-            
+            }
+
             var tmpData = $this.data('ipWidget');
             tmpData.state = IP_WIDGET_STATE_WAITING_MANAGEMENT;
             $this.data('ipWidget', tmpData);
-            
+
             var data = Object();
             data.g = 'standard';
             data.m = 'content_management';
@@ -196,12 +196,12 @@
     save : function() {
         return this.each(function() {
             var $this = $(this);
-            
+
             if ($this.data('ipWidget').state != IP_WIDGET_STATE_MANAGEMENT) {
                 return;
             }
 
-            
+
             var widgetName = $this.data('ipWidget').name;
 
             var saveJob = new ipSaveJob(widgetName, 1);
@@ -220,7 +220,7 @@
                 var data = Object();
                 widgetInputs.each(function(index) {
                     data[$(this).attr('name')] = $(this).val();
-                }); 
+                });
                 $this.ipWidget('_saveData', data);
             }
 
@@ -235,8 +235,8 @@
             saveJob.setProgress(progress);
             $this.trigger('addSaveJob.ipContentManagement', ['widget_' + $(this).data('ipWidget').instanceId, saveJob]);
         });
-    },    
-    
+    },
+
     _saveData : function(widgetData) {
 
         return this.each(function() {
@@ -273,25 +273,25 @@
             $newWidget.trigger('statePreview.ipWidget',{
                 'instanceId': response.instanceId
             });
-            
+
             // init any new blocks the widget may have created
             $(document).ipContentManagement('initBlocks', $newWidget.find('.ipBlock'));
-            
+
             var tmpData = $newWidget.data('ipWidget');
             tmpData.state = IP_WIDGET_STATE_PREVIEW;
             $newWidget.data('ipWidget', tmpData);
-            
-            var instanceId = $(this).data('ipWidget').instanceId; 
+
+            var instanceId = $(this).data('ipWidget').instanceId;
             $this.trigger('removeSaveJob.ipContentManagement', ['widget_' + instanceId]);
             $this.remove();
-            
+
         });
     },
 
     cancel : function() {
         return this.each(function() {
             var $this = $(this);
-            
+
             if ($this.data('ipWidget').state != IP_WIDGET_STATE_MANAGEMENT) {
                 return;
             }
@@ -332,6 +332,13 @@
                     var tmpData = $newWidget.data('ipWidget');
                     tmpData.state = IP_WIDGET_STATE_PREVIEW;
                     $newWidget.data('ipWidget', tmpData);
+
+                    if ($newWidget.hasClass('ipWidget-IpColumns')) {
+                        var options = $(document).data('ipContentManagement').initInfo;
+                        $newWidget.find('.ipBlock').ipBlock(options);
+
+                    }
+
                 } else {
                     $this.trigger('deleteWidget.ipBlock', {
                         'instanceId': response.instanceId
@@ -347,12 +354,12 @@
             }
         });
     }
-    
 
-    
-    
-    
-    
+
+
+
+
+
     };
 
     $.fn.ipWidget = function(method) {
