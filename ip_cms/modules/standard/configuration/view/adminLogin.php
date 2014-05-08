@@ -5,7 +5,7 @@
     <title>ImpressPages</title>
     <link rel="stylesheet" href="<?php echo BASE_URL . BACKEND_DIR ?>design/login/login.css">
     <link rel="stylesheet" href="<?php echo BASE_URL . LIBRARY_DIR ?>css/bootstrap/bootstrap.css">
-    <link rel="shortcut icon" href="<?php echo BASE_URL ?>'favicon.ico">
+    <link rel="shortcut icon" href="<?php echo BASE_URL ?>favicon.ico">
 </head>
 <body>
 
