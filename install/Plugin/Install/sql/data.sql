@@ -46,6 +46,8 @@ INSERT INTO `ip_storage` (`plugin`, `key`, `value`) VALUES
 ('Config', 'Config.automaticCron', '"1"'),
 ('Config', 'Config.cronPassword', '123456'),
 ('Config', 'Config.defaultImageQuality', '80'),
+('Config', 'Ip.disablePluginMarket', 1),
+('Config', 'Ip.disableThemeMarket', 1),
 ('Config', 'Config.availableFonts', '"Arial,Arial,Helvetica,sans-serif\\nArial Black,Arial Black,Gadget,sans-serif\\nComic Sans MS,Comic Sans MS,cursive\\nCourier New,Courier New,Courier,monospace\\nGeorgia,Georgia,serif\\nImpact,Charcoal,sans-serif\\nLucida Console,Monaco,monospace\\nLucida Sans Unicode,Lucida Grande,sans-serif\\nPalatino Linotype,Book Antiqua,Palatino,serif\\nTahoma,Geneva,sans-serif\\nTimes New Roman,Times,serif\\nTrebuchet MS,Helvetica,sans-serif\\nVerdana,Geneva,sans-serif\\nGill Sans,Geneva,sans-serif"'),
 ('Config', 'Config.reservedDirs', '["file","install","Ip","Plugin","update","Theme","index.php","admin","admin.php"]'),
 ('Config', 'Content.widgetGalleryQuality', '90'),
@@ -75,5 +77,5 @@ INSERT INTO `ip_storage` (`plugin`, `key`, `value`) VALUES
 
 
 INSERT INTO `ip_plugin` (`title`, `name`, `version`, `isActive`) VALUES
-('Application', 'Application', 1.00, 1),
+('iHub', 'iHub', 1.00, 1),
 ('Colorbox', 'Colorbox', 1.00, 1);

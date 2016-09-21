@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Application;
+namespace Plugin\iHub;
 
 
 class Event
@@ -9,7 +9,8 @@ class Event
     {
         //Add CSS, JS, set block content
         //ipAddCss('assets/application.css');
-        //ipAddJs('assets/application.js');
+        ipAddJs('assets/application.js');
+
     }
 
 }

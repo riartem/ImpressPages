@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Plugin\Application;
+namespace Plugin\iHub;
 
 
 class PublicController extends \Ip\Controller

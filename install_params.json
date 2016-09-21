@@ -3,7 +3,7 @@
     "websiteName": "MySite",
     "websiteEmail": "mysite@localhost",
     "timezone": "Europe/Minsk",
-    "support": 1
+    "support": 0
   },
   "db": {
     "hostname": "localhost",

@@ -98,9 +98,10 @@ class PublicController extends \Ip\Controller
             $configToFile['timezone'] = $myConfig['timezone'];
             $configToFile['adminLocale'] = 'ru';
 
-            if (Helper::checkModRewrite() != 'success') {
+            /*if (Helper::checkModRewrite() != 'success') {
                 $configToFile['rewritesDisabled'] = true;
-            }
+            }*/
+            $configToFile['rewritesDisabled'] = false;
 
             //$admin = ipRequest()->getPost('admin');
             $admin = $preconfig['admin'];
@@ -120,12 +121,12 @@ class PublicController extends \Ip\Controller
                 if ($admin) {
                     Model::insertAdmin($adminUsername, $adminEmail, $adminPassword);
                 }
-                ipSetOptionLang('Config.websiteTitle', $_SESSION['config']['websiteName'], 'en');
-                ipSetOptionLang('Config.websiteEmail', $_SESSION['config']['websiteEmail'], 'en');
+                ipSetOptionLang('Config.websiteTitle', $myConfig['websiteName'], 'ru');
+                ipSetOptionLang('Config.websiteEmail', $myConfig['websiteEmail'], 'ru');
                 Model::generateCronPassword();
                 ipStorage()->set('Ip', 'cachedBaseUrl', $cachedBaseUrl);
                 ipStorage()->set('Ip', 'websiteId', $_SESSION['websiteId']);
-                ipStorage()->set('Ip', 'getImpressPagesSupport', $_SESSION['config']['support']);
+                ipStorage()->set('Ip', 'getImpressPagesSupport', $myConfig['support']);
             } catch (\Exception $e) {
                 $_SESSION['db_errors'][] = $e->getTraceAsString();
                 return \Ip\Response\JsonRpc::error($e->getTraceAsString());
