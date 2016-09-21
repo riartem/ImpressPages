@@ -47,39 +47,100 @@ class PublicController extends \Ip\Controller
     {
         $this->init();
 
-        if (isset($_GET['step'])) {
-            $step = (int)$_GET['step'];
-        } else {
-            $step = Helper::$firstStep;
-        }
-
-        if ($step < Helper::$firstStep) {
-            $step = Helper::$firstStep;
-        }
-
-        // going to the last step
-        if (!Helper::isInstallAvailable() || $step > Helper::$lastStep) {
-            $step = Helper::$lastStep;
-        }
-
-        switch ($step) {
-            case '1':
-                $response = $this->configuration();
-                break;
-            case '2':
-                $response = $this->systemCheck();
-                break;
-            case '3':
-                $response = $this->database();
-                break;
-            case '4':
-                $response = $this->finish();
-                break;
-            default:
-                $response = new LayoutResponse();
-        }
+        $response = $this->preinstall();
 
         return $response;
+    }
+
+    protected function preinstall()
+    {
+        $_SESSION['installationLanguage'] = 'ru';
+        if (Helper::isInstallAvailable() === false) {
+            die("Установка уже была совершена. Чтобы переустановить систему, воспользуйтесь панелью управления <a href='https://ihub.by/'>ihub.by</a>");
+        }
+
+        $config_file = ipFile('install_params.json');
+
+        if(file_exists($config_file) and isset($_GET['start']) > 0){
+            $preconfig = json_decode(file_get_contents($config_file), true);
+
+
+            $myConfig = $preconfig['config'];
+            $dbConfig = $preconfig['db'];
+            ipConfig()->set('db', $dbConfig);
+
+            try {
+                ipDb()->getConnection();
+            } catch (\Exception $e) {
+                die(__("Can't connect to database.", 'Install'));
+            }
+
+            try {
+                Model::createAndUseDatabase($dbConfig['database']);
+            } catch (\Ip\Exception $e) {
+                die(__('Specified database does not exists and cannot be created.', 'Install'));
+            }
+
+            $errors = Model::createDatabaseStructure($dbConfig['database'], $dbConfig['tablePrefix']);
+
+            if (!$errors) {
+                $errors = Model::importData($dbConfig['tablePrefix']);
+            }
+
+            if ($errors) {
+                $_SESSION['db_errors'][] = 'Failed install';
+                return \Ip\Response\JsonRpc::error(__('There were errors while executing install queries. ' . serialize($errors), 'Install', false));
+            }
+
+            $configToFile = array();
+            $configToFile['sessionName'] = 'ses' . rand();
+            $configToFile['db'] = $dbConfig;
+            $configToFile['timezone'] = $myConfig['timezone'];
+            $configToFile['adminLocale'] = 'ru';
+
+            if (Helper::checkModRewrite() != 'success') {
+                $configToFile['rewritesDisabled'] = true;
+            }
+
+            //$admin = ipRequest()->getPost('admin');
+            $admin = $preconfig['admin'];
+            if ($admin) {
+                $adminUsername = $admin['username'];
+                $adminEmail = $admin['email'];
+                $adminPassword = $admin['password'];
+            }
+
+            $cachedBaseUrl = substr(rtrim(ipConfig()->baseUrl(),"/"), 0, - strlen('install'));
+
+
+            try {
+                ipConfig()->set('db', $dbConfig);
+
+                // if admin data is posted then user will be created
+                if ($admin) {
+                    Model::insertAdmin($adminUsername, $adminEmail, $adminPassword);
+                }
+                ipSetOptionLang('Config.websiteTitle', $_SESSION['config']['websiteName'], 'en');
+                ipSetOptionLang('Config.websiteEmail', $_SESSION['config']['websiteEmail'], 'en');
+                Model::generateCronPassword();
+                ipStorage()->set('Ip', 'cachedBaseUrl', $cachedBaseUrl);
+                ipStorage()->set('Ip', 'websiteId', $_SESSION['websiteId']);
+                ipStorage()->set('Ip', 'getImpressPagesSupport', $_SESSION['config']['support']);
+            } catch (\Exception $e) {
+                $_SESSION['db_errors'][] = $e->getTraceAsString();
+                return \Ip\Response\JsonRpc::error($e->getTraceAsString());
+            }
+
+            try {
+                Model::writeConfigFile($configToFile, ipFile('config.php'));
+            } catch (\Exception $e) {
+                $_SESSION['db_errors'][] = 'Cannot write config file';
+                return \Ip\Response\JsonRpc::error(__('Can\'t write configuration "/config.php"', 'Install', false));
+            }
+        }
+
+        $content = ipView('view/preinstall.php', array())->render();
+        echo $content; exit;
     }
 
     protected function configuration()

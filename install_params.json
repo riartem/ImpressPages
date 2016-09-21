@@ -1,0 +1,21 @@
+{
+  "config": {
+    "websiteName": "MySite",
+    "websiteEmail": "mysite@localhost",
+    "timezone": "Europe/Minsk",
+    "support": 1
+  },
+  "db": {
+    "hostname": "localhost",
+    "username": "testihub",
+    "password": "testihub",
+    "database": "testihub",
+    "charset": "utf8",
+    "tablePrefix": "ip_"
+  },
+  "admin": {
+    "username": "admin",
+    "email": "admin@localhost",
+    "password": "12345678"
+  }
+}
