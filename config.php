@@ -1,4 +1,4 @@
 <?php
 
- if(!isset($_GET['install']))
-    header("location: install/?step=5&lang=ru");
+ if(!isset($_GET['step']))
+    header("location: install/?lang=ru");
